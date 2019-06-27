@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body{
+                background-image: url("/images/bg1.jpg");
+            }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>modift Info</title>
+</head>
+<body>
+    <form method = "POST" action = "/api/task/modified">
+        
+                <div style="text-align:center"><h1>information</h1>
+                picture   : <input type = "file" placeholder="<%=modiinfo.img.url%>" name = "picture"><br>
+                firstName : <input type = "text" placeholder="<%=modiinfo.Firstname%>" name = "Firstname"><br>
+                LastName  : <input type = "text" placeholder="<%=modiinfo.Lastname%>" name = "Lastname"><br>
+                <h3>login information</h3><br>
+                ID        : <input type = "text" placeholder="<%=modiinfo.ID%>" name = "ID"><br>
+                PassWord  : <input type = "text" placeholder="<%=modiinfo.PW%>" name = "PW"><br>
+                <h3>Address</h3><br>
+                Street    : <input type = "text" placeholder="<%=modiinfo.Address.Street%>" name = "Street"><br>
+                City      : <input type = "text" placeholder="<%=modiinfo.Address.City%>" name = "City"><br>
+                State     : <input type = "text" placeholder="<%=modiinfo.Address.State%>" name = "State"><br>
+                Country   : <input type = "text" placeholder="<%=modiinfo.Address.Country%>" name = "Country"><br><br>
+                            <input type = "hidden" value = "<%=modiinfo._id%>" name = "_id">
+               
+        <input type = "image" src = "/images/Modify.gif" height= "200" width="300" name = "Submit" value="Submit" ></div>
+    </form>
+    <form method = "GET" action = "/">
+        <input type = "image" src = "/images/cancel.jpg" height = "200" width = "300" name = "Submit" value = "Submit"></intput>
+    </form>
+</body>
+</html>

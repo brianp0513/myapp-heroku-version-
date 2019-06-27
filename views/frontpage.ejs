@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body, html{
+            margin : 0;
+            padding: 0;
+            height : 100%;
+        }
+        .bgimg{
+            border: 0;
+            padding: 0; 
+            background-image: url('/images/login.jpg');
+            min-height: 100%;
+            background-position: center;
+            background-size: cover;
+            display : flex;
+            justify-content: center;
+            align-items: center;
+            /* display, justtify-content, align-items 속성이 합쳐져서 모든 컨텐트들이 가운데 화면 크기에 따라 가운데 정렬된다. */
+        }
+        input {
+        padding: 30px;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        display : flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        background-color: rgba( 255, 255, 255, 0.0 );
+        border :0;
+        outline: 0;
+        /* border와 outline 속성으로 버튼의 테두리가 사라졌다. */
+      }
+       
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <script lang="javascript">
+            const popurl = "/loginpage.html";
+            const popoption = "scrollbars = no, toolbar = no, location = no, status = no, menubar = no, resizable = no, width = 400, height = 300, left=center, top = 50;";
+            function showPopup(){window.open(popurl,"_blank",popoption)};
+       </script>
+</head>
+<body onload="javascript:showPopup()">
+    <div class ="bgimg">
+         
+        
+        <!-- <input type = "button" style = "width: 100%; height: 100%" value = "login" onfocus="showPopup();"/> -->
+        <!-- style속성으로 인해 버튼의 크기를 조절할 수 있다. -->
+
+    </div>
+</body>
+</html>

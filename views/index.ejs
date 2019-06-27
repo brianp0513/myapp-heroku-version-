@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body, html{
+            margin : 0;
+            padding: 0;
+            border: 0;
+            height : 100%;
+            outline: 0;
+        }
+        .bgimg{ 
+
+            background-image: url('/images/main.jpg');
+            min-height: 100%;
+            background-position: center;
+            background-size: cover;
+            /* display, justtify-content, align-items 속성이 합쳐져서 모든 컨텐트들이 가운데 화면 크기에 따라 가운데 정렬된다. */
+        }
+      .logout{
+                    border: 0;
+                    outline: 0;
+                    min-height: 100%;
+                    text-align: right;
+                    background-color: dimgray;
+                    background-position: top;
+                    font-size: 20px;
+                    font-weight: bold;
+                }
+        .postbutton{
+                    text-align: left;
+                    min-height: 100%;    
+        }
+       .text{  
+                    font-weight: bold;
+                    text-align: center;
+                    position: absolute;
+              }
+        .content{
+            display : flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>main page</title>
+</head>
+<body >
+    <div class ="bgimg">
+            <div class = "logout">
+                            <form method = "POST" action = "/login/progress">
+                                <input type = "submit" class = "logout" value = "Hello, <%=userInfo[0].Lastname%>">
+                                <input type = "hidden" value = "<%=userInfo[0].ID%>" name = "ID">
+                                <input type = "hidden" value = "<%=userInfo[0].PW%>" name = "PW">
+                            </form>
+                        <form method = "GET" action = "/">
+                                <input type="submit" class = "logout" value = "Logout">
+                        </form>
+                        <form method = "POST" action = "/main/post" class = "postbutton">
+                            <input  type = "image" src = '../images/newpost.png' height = "50px" width="200px" name = "post">
+                            <input type = "hidden" value = "<%=userInfo[0].Lastname%>" name = "Lastname">    
+                        </form>    
+                </div>
+            <div class = "content">
+                <img src = "../images/bg1.jpg" style="opacity: 0.8" height = "1000px" width="2000px">
+            </div>
+        <!-- <input type = "button" style = "width: 100%; height: 100%" value = "login" onfocus="showPopup();"/> -->
+        <!-- style속성으로 인해 버튼의 크기를 조절할 수 있다. -->
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body, html{
+                    margin : 0;
+                    padding: 0;
+                    height : 0%;
+                }
+                    .bgimg{
+                    border: 0;
+                    padding: 0; 
+                    min-height: 100%;
+                    background-position: center;
+                    background-size: cover;
+                    display : flex;
+                    justify-content: center;
+                    align-items: center;
+                    /* display, justtify-content, align-items 속성이 합쳐져서 모든 컨텐트들이 가운데 화면 크기에 따라 가운데 정렬된다. */
+                }
+                .logout{
+                    border: 0;
+                    outline: 0;
+                    padding: 0; 
+                    min-height: 100%;
+                    background-color: dimgray;
+                    background-position: top;
+                    text-align: right;
+                }
+                input {
+                /* padding: 30px; */
+                font-size: 18px;
+                font-weight: bold;
+                text-align: center;
+                background-color: #ffffff;
+                background-color: rgba( 255, 255, 255, 0.3 );
+                border :0;
+                outline: 0;
+                /* border와 outline 속성으로 버튼의 테두리가 사라졌다. */
+              }
+              .text{
+                
+                
+                font-weight: bold;
+                text-align: center;
+                position: absolute;
+              }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Document</title>
+</head>
+<body>
+        <div class = "logout" >
+                <h1>
+                        <form method = "POST" action = "/login/progress">
+                            <input type = "submit" value = "Hello, <%=userInfo.Lastname%>">
+                            <input type = "hidden" value = "<%=userInfo.ID%>" name = "ID">
+                            <input type = "hidden" value = "<%=userInfo.PW%>" name = "PW">
+                        </form>
+                    <form method = "GET" action = "/">
+                            <input type="submit" value = "Logout">
+                    </form>    
+                </h1>
+            </div>
+            <div class = "bgimg">
+                <img src = "/images/bg1.jpg" style="opacity: 0.8" height = "700px" width="600px">
+                    <div class ="text">
+                        <form method ="POST" action = "/login/edit">
+                           <table border = "0" outline = "0" height = "600px" width = "500px">
+                               <!-- 첫번쨰 가로 는 가로(colspan)로 4칸 확장하고  세로확장은 기본값(rowspan = "1")-->
+                               <tr>
+                                   <h2><td colspan="4" >userID profile</td></h2>
+                               </tr>
+                               <!-- 2번쨰 가로는 첫번쨰 그림은 가로로 2칸 세로로 2칸 확장했다. -->
+                               <tr>
+                                   <td colspan="2" rowspan="2"><img src = "/images/<%=userInfo.img.url%>" height ="250px" width="200px"></td>
+                               
+                                   <td>firstname : </td> <td><%=userInfo.Firstname%></td>
+                                </tr>
+                                <!-- 뇌피셜이지만 firstname을 집어넣은후 공간이남아 lastname이 빨려들어간거 같다. -->
+                                <tr>
+                                    <td>Lastname  : </td> <td><%=userInfo.Lastname%></td>
+                                </tr>
+                                <!-- ID,password, Address의 값이 들어가는 곳은 가로로 3칸 확장시켰다. -->
+                                <tr>
+                                        <td>ID  : </td> <td colspan="3"><%=userInfo.ID%></td>
+                                </tr>
+                                <tr>
+                                        <td>Address : </td> <td colspan = "3"><%=userInfo.Address.Street%>, <%=userInfo.Address.City%>, <%=userInfo.Address.State%>, <%=userInfo.Address.Country%></td>
+                                    </tr>
+                                    <!-- 마지막 가로는 각각의 버튼이 2개의 가로를 확장했다. -->
+                                <tr>
+                                                <input type = "hidden" value = "<%= userInfo.ID%>" name = "logindata"> 
+                                        <td colspan="2"><input type = "image" src = "../images/newedit.png" height = "75px" width = "200px"></td>
+                                </form>
+                                <form method ="POST" action= "/main">
+                                                        <input type = "hidden" value = "<%=userInfo._id%>" name = "ID">
+                                                        
+                                        <td colspan="2"><input type = "image" src = "../images/newexit.png" height = "75px" width = "200px"></td>
+                                </form>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">cannot see the update information?
+                                        <input type = "button" value="refresh" onclick = "refresh();" height = "50px" width="400px"></td>
+                                    <script>
+                                        function refresh(){
+                                            window.location.reload(true);
+                                        }
+                                    </script>
+                                </tr>
+
+                           </table>
+                        </form>
+                    </div> 
+            </div>    
+</body>
+</html>

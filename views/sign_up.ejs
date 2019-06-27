@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>register</title>
+    <style>
+            body, html{
+                    margin : 0;
+                    padding: 0;
+                    height : 100%;
+                    }
+            .bgimg{
+                    border: 0;
+                    padding: 0; 
+                    background-image: url('/images/login.jpg');
+                    min-height: 100%;
+                    background-position: center;
+                    background-size: cover;
+                    display : flex;
+                    justify-content: center;
+                    align-items: center;
+                    /* display, justtify-content, align-items 속성이 합쳐져서 모든 컨텐트들이 가운데 화면 크기에 따라 가운데 정렬된다. */
+                    }
+            input {
+                /* padding: 30px; */
+                font-size: 15px;
+                font-weight: bold;
+                text-align: center;
+                background-color: #ffffff;
+                background-color: rgba( 255, 255, 255, 0.3 );
+                border :0;
+                outline: 0;
+                /* border와 outline 속성으로 버튼의 테두리가 사라졌다. */
+            }
+            .text{
+                
+                font-weight: bold;
+                text-align: center;
+                position: absolute; 
+            }
+            .button_margin{
+                float : left;
+            }
+    </style>
+</head>
+<body>
+    <div class = "bgimg">
+            <img src = "/images/bg1.jpg" style="opacity: 0.8" height = "700px" width="500px">
+        <div class = "text">
+                <form method = "POST" action = "/login/registered">
+        
+                
+                            <h1>register</h1>
+                        picture   : <input type = "file" placeholder="type picture URLs" name = "picture"><br><br>
+                        firstName : <input type = "text" placeholder="type firstName" name = "firstName"><br><br>
+                        LastName  : <input type = "text" placeholder="type LastName" name = "LastName"><br>
+                        <h2>login information</h2><br>
+                        ID        : <input type = "text" placeholder="type ID" name = "ID" maxlength = "12" minlength = "4"><br><br>
+                        PassWord  : <input type = "text" placeholder="type PassWord" name = "PassWord" maxlength = "12" minlength = "4"><br>
+                        <h2>Address</h2><br>
+                        Street    : <input type = "text" placeholder="type Street" name = "Street"><br><br>
+                        City      : <input type = "text" placeholder="type City" name = "City"><br><br>
+                        State     : <input type = "text" placeholder="type State" name = "State"><br><br>
+                        Country   : <input type = "text" placeholder="type Country" name = "Country"><br><br>
+                            <div class = "button_margin" style = "margin-right:20px;">
+                                <input type = "image" src = "/images/newregister.png" height= "50" width="150" name = "Submit" value="Submit" >
+                                    <script lang= "javascript">
+                                    function register(){
+                                        alert('register complete!');
+                                    }
+                                        function duplicate(){
+                                            alert('ID already used. use different ID');
+                                        };
+                                    </script>
+                            </div>
+               </form>
+                <form method = "GET" action = "/">
+                            <div class = "button_margin" style = "margin-left:20px;">
+                                <input type = "image" src = "/images/newcancel.png" height = "50" width = "150" name = "Submit" value = "Submit">
+                            </div>
+                </form>
+        </div>
+    </div>
+    
+                
+    
+</body>
+</html>
