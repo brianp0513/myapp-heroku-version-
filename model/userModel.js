@@ -7,7 +7,7 @@ const SampleSchema = mongoose.Schema({
         Firstname : String,
         Lastname : String,
         ID : String,
-        PW : String,
+        PW : {type : String, require : true},
         Address : {Street : String, City : String, State : String, Country : String},
         // img   : { data : Buffer, contentType : String ,url : String}
         img : {url : String}

@@ -164,12 +164,12 @@
                                         <td colspan="2"><input type = "image" src = "../images/modify.jpg" onclick = "modiclick();" height = "75px" width = "200px"></td>
                                                         <script>
                                                             function modiclick(){
+                                                                if(req.body.PW == 0){alert('Unknown Password!');}
                                                                 alert('editing complete!');    
-                                                                setTimeout(location.reload(),3000);//3000밀리초 = 3초
                                                             }
                                                         </script>
                                 </form>
-                                <form method ="POST" action= "/login/progress">
+                                <form method ="GET" action= "/showprofile">
                                         <td colspan="2"><input type = "hidden" value = "<%=userInfo.ID%>" name = "ID">
                                                         <input type = "hidden" value = "<%=userInfo.PW%>" name = "PW">
                                             <input type = "image" src = "../images/newcancel.png" height = "75px" width = "200px"></td>

@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userModel = require('../model/userModel');
+const passport = require('passport');
+const async = require('async');
+const cookieParser = require('cookie-parser');
 
 
 //-----------------------------------------메인페이지(로그인화면)------------------------------------------------
@@ -47,7 +50,7 @@ router.post('/login/registered',(req,res) =>{
 })
 //---------------------------------로그인이후------------------------------------
 //가입된 유저인지 아닌지 가입이 됬으면 프로필 창으로 보내고 아니면 alert로 incorrect logininformation을 띄워준다.
-    router.post('/login/progress',(req,res) =>{
+    router.post('/login/progress',(req,res,next) =>{
         
         userModel.findOne({"ID" : req.body.ID}, (err,doc) =>{
             if(err) return console.log(err);
@@ -62,13 +65,32 @@ router.post('/login/registered',(req,res) =>{
                         return console.log(err);
                     }
                     if(!isMatch){
+                        console.log('req.bodt.PW : ', req.body.PW);
+                        console.log('doc.PW      : ', doc.PW);
                         return console.log('Invalid password');
                     }
                     else{
-                        return res.render('../views/profile.ejs',{'userInfo' : doc})
+                        console.log('you pass comparepassword function');
+                        req.session.user = {
+                            ID : req.body.ID,
+                            PW : req.body.PW,
+                            authenticate : true
+                        }
+                        next();
                     }
                 })
             }
+        })
+    },passport.authenticate('local-login',{
+        successRedirect : '/showprofile',
+        failureRedirect : '/',
+        failureFlash : true
+    })
+    );
+    router.get('/showprofile',(req,res)=>{
+        userModel.findOne({"ID" : req.session.user.ID}, (err,doc) =>{
+            console.log('show login user : ',doc)
+            return res.render('../views/profile.ejs',{'userInfo' : doc})
         })
     })
 //-----------------------------프로필창-----------------------------------------
@@ -88,7 +110,6 @@ router.post('/main', (req,res) =>{
                         }
                         else{
                             return res.render('../views/index.ejs',{'userInfo' : result , 'custLists' : datas})
-                            console.log('this is result',result);
                             
                         }
                     })
@@ -96,10 +117,8 @@ router.post('/main', (req,res) =>{
 }) 
 //edit 버튼
 router.post('/login/edit', (req,res)=>{
-    const logindata = req.body.logindata;
     console.log('this is /login/edit');
-    console.log(req.body.logindata);
-    userModel.findOne({"ID" : logindata}).then( result =>{
+    userModel.findOne({"ID" : req.session.user.ID}).then( result =>{
         if(!result){
             return console.log('ID cannot find');
         }
@@ -122,29 +141,34 @@ router.post('/login/modicomplete', (req,res) =>{
                 profile.Address.City = req.body.City;
                 profile.Address.State = req.body.State;
                 profile.Address.Country = req.body.Country;
-   userModel.findOne({"ID" : req.body.ID})
-                                          .then(result =>{
-                                              if(!result){
-                                                 console.log('cannot find userinformation');
-                                              }
-                                              else{//findOne의 else이다.
-                                                console.log('this is profile',profile);//new information but not bcrypt password
-                                                console.log('this is result',result);//original information
-                                                  userModel.deleteOne({"ID" : req.body.ID}, function(err){
-                                                      if(err) return console.log('delete one is error');
-                                                      else{//deleteOne의 else이다.
-                                                          profile.save(function(err,doc){
-                                                              if(err) return res.render('../views/fail.ejs',{error : err})
-                                                              else{//save의 else이다.
-                                                                console.log('update complete');
-                                                                console.log('this is doc in save : ',doc);
-                                                                res.render('../views/profile.ejs',{'userInfo' : doc});
-                                                              }
-                                                          })
-                                                      }
-                                                  })
-                                              }
-                                          })
+                if(profile.PW.length == 0 || profile.img.url.length ==0){
+                    return console.log('cannot unkown PW or URL');
+                }
+                else{
+                    userModel.findOne({"ID" : req.body.ID})
+                                                            .then(result =>{
+                                                                if(!result){
+                                                                    console.log('cannot find userinformation');
+                                                                }
+                                                                else{//findOne의 else이다.
+                                                                    console.log('this is profile',profile);//new information but not bcrypt password
+                                                                    console.log('this is result',result);//original information
+                                                                    userModel.deleteOne({"ID" : req.body.ID}, function(err){
+                                                                        if(err) return console.log('delete one is error');
+                                                                        else{//deleteOne의 else이다.
+                                                                            profile.save(function(err,doc){
+                                                                                if(err) return res.render('../views/fail.ejs',{error : err})
+                                                                                else{//save의 else이다.
+                                                                                    console.log('update complete');
+                                                                                    console.log('this is doc in save : ',doc);
+                                                                                    res.render('../views/profile.ejs',{'userInfo' : doc});
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                    })
+                                                                }
+                                                            })
+                        }
                                         })
 //-----------------------------------게시글 삽입 기능-----------------------------
 router.post('/main/post', (req,res) =>{
