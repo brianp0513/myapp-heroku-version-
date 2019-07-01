@@ -37,7 +37,7 @@ console.log('connected to the database.');
 var app = express();
 
 //set up
-app.set('port',process.env.PORT || 48228);
+app.set('port',process.env.PORT);
 app.set('views',__dirname+'/views');
 app.set('view engine','ejs');
 
