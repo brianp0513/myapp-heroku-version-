@@ -2,6 +2,7 @@
 //loaded package
 //라우팅 및 서버생성에 필요한 패키지
 var http = require('http');
+var https = require('https');
 var path = require('path');
 var static = require('serve-static');
 var express = require('express');
@@ -174,7 +175,7 @@ app.use('*', (req, res ) => {
 
 //서버 생성(로컬 서버)
 http.createServer(app).listen(app.get('port'),function(){
-    console.log('Express server is activated Port : '+app.get('port'))
+    console.log('Express server is activated Port : ',app.get('port'))
 })
 //서버 생성
 
