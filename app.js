@@ -172,10 +172,11 @@ app.use('*', (req, res ) => {
     return res.render('404.ejs')
 })
 
-//서버 생성
+//서버 생성(로컬 서버)
 http.createServer(app).listen(app.get('port'),function(){
     console.log('Express server is activated Port : '+app.get('port'))
 })
+//서버 생성
 
 //데이터베이스 닫기
 console.log("closing database");

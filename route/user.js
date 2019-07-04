@@ -19,7 +19,7 @@ router.get('/login/registeration', (req,res) =>{
 //가입정보를 데이터베이스에 저장
 router.post('/login/registered',(req,res) =>{
     const profile = new userModel;
-         profile.img = req.body.picture;
+         profile.img = '/'+req.body.picture;
          profile.Firstname = req.body.firstName;
          profile.Lastname = req.body.LastName;
          profile.ID = req.body.ID;
