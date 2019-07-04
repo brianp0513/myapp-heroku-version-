@@ -53,7 +53,7 @@
         
                 
                             <h1>register</h1>
-                        picture   : <input type = "file" placeholder="type picture URLs" name = "picture"><br><br>
+                        picture   : <input type = "file" id = "imgurl" placeholder="type picture URLs" name = "picture"><br><br>
                         firstName : <input type = "text" placeholder="type firstName" name = "firstName"><br><br>
                         LastName  : <input type = "text" placeholder="type LastName" name = "LastName"><br>
                         <h2>login information</h2><br>
@@ -66,7 +66,12 @@
                         Country   : <input type = "text" placeholder="type Country" name = "Country"><br><br>
                             <div class = "button_margin" style = "margin-right:20px;">
                                 <input type = "image" src = "/images/newregister.png" height= "50" width="150" name = "Submit" value="Submit" >
-                                    <script lang= "javascript">
+                                    <script>
+                                        const Imgurl = document.querySelector('#imgurl');
+
+                                        Imgurl.onchange = function(){
+                                            document.getElementById('imgurl').value = this.value;
+                                        }
                                     function register(){
                                         alert('register complete!');
                                     }

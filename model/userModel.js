@@ -4,13 +4,15 @@ const bcrypt = require('bcrypt');//비크립트 사용 선언
 
 //스키마 생성
 const SampleSchema = mongoose.Schema({
+        sns : {type : String, default : ''},
         Firstname : String,
         Lastname : String,
+        CID : String,
         ID : String,
-        PW : {type : String, require : true},
+        PW : String,
         Address : {Street : String, City : String, State : String, Country : String},
         // img   : { data : Buffer, contentType : String ,url : String}
-        img : {url : String}
+        img : String
 });
 //save 되기전(pre)에 모델에 대해서 할일을 schema에 저장하는 단계
 SampleSchema.pre('save',function(next){

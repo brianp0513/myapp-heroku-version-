@@ -10,12 +10,13 @@ const userRoute = require('./route/user');
 const userModel = require('./model/userModel');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const NaverStrategy = require('passport-naver').Strategy;
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-const bcrypt = require('bcrypt');
 const helmet = require('helmet');//웹서버와 클라이언트는 req,res로 받는데 해커가 이 과정에서 헤더를 가로챌 수 있기 떄문에 헤더를 보안해준다. 
 const assert = require('assert');
 const session = require('express-session');
+const sessionStorage = require('node-sessionstorage');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
     url : 'mongodb://localhost:27017/Thw2modimodi',
@@ -44,6 +45,7 @@ app.set('view engine','ejs');
 app.use(bodyPaser.urlencoded({extended : true}));
 app.use(bodyPaser.json());
 app.use(static(path.join(__dirname,'/')));
+app.use(flash());
 //세션 설정
 app.use(session({
     secret : 'JAIfvnjoisdfhubjdsi',//세션 설정시 의 key값이다. 불특정한 값을 사용
@@ -87,7 +89,7 @@ passport.use('local-login', new LocalStrategy({
             if(err) return done(err);
                 
             if(!user){//이 경우 회원이 아니므로
-                console.log('userID not found');//여기서 걸리니까 여기서부터 해결해라.
+                console.log('userID not found');
                 console.log(user);
                 return done(null, false);//false 값을 주어 로그인이 되지 않습니다.
             }
@@ -102,8 +104,68 @@ passport.use('local-login', new LocalStrategy({
             }
         })
 }));
+//=======================================네이버 passport설정===================================================
 
+
+passport.use('naver', new NaverStrategy({
+    clientID : 'LcjFtyxQo_IDm2x_THBO',
+    clientSecret : 'TLmU0KZOkh',
+    callbackURL : 'http://localhost:8080/naver_oauth'
+}, (accessToken, refreshToken, profile, done)=>{
+    console.log(profile);//가지고온 네이버 회원 정보 display
+
+    const fullname = profile.displayName;
+    const FN = fullname.substring(0,1);//성만 따오기
+    const LN = fullname.substring(1,3);//이름만 따오기
+    //user.js에 필요한 최소한의 정보를 sessionStorage에 저장
+    sessionStorage.setItem("naversns",profile.provider);
+    sessionStorage.setItem("naverCID",profile.id);
+    sessionStorage.setItem("naveremail",profile._json.email);
+    
+    userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
+        if(err){return done(err);}
+        if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
+            console.log('cannot find user so create new account');
+            console.log(user);
+            userModel.create({
+                sns : profile.provider,
+                Firstname : FN,
+                Lastname : LN,
+                CID : profile.id,
+                ID : profile._json.email,
+                PW : '',
+                Address : {Street : '',City : '',State : '', Country : ''},
+                img : profile._json.profile_image,
+                token : accessToken}, function(err, user){
+                    if(err) {
+                        console.log('error detected!');
+                        return done(err);
+                    }
+                    else{
+                        return done(null, user);
+                    }
+                }
+            )
+        }
+        else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
+            console.log('this naver account was accessed in this website just go through login');
+            console.log('this is naver userInfo : ',user);
+            userModel.findById(user._id,(err,user)=>{
+                if(err){
+                    return done(err);
+                }
+                else{
+                    console.log('this is user in app.js : ', user);
+                     done(null, user);
+                }
+            })
+        }
+    })
+}))
 //라우터 경로들 
+
+
+
 
 app.use('/',userRoute);
 app.use('*', (req, res ) => {

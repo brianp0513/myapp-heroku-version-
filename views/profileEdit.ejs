@@ -90,17 +90,17 @@
                                </tr>
                                <!-- 2번쨰 가로는 첫번쨰 그림은 가로로 2칸 세로로 2칸 확장했다. -->
                                <tr>
-                                   <td colspan="2" rowspan="2"><img src = "/images/<%=userInfo.img.url%>" id="preview" height ="250px" width="200px">
+                                   <td colspan="2" rowspan="2"><img src = "/images/<%=userInfo.img%>" id="preview" height ="250px" width="200px">
                                                                 <a id="download" download="thumbnail.jpg" target = "_blank">
                                                                     <img id = "thumbnail" src = "" width = "100px" heigh = "100px" alt = "thumbnail (click to download)">    
                                                                 </a>
-                                                                <input type = "file" id = "getfile" name = "imgInput"/>
+                                                                <input type = "file" id = "getfile" name = "imgInput" />
                                                                 <script>
                                                                     const file = document.querySelector('#getfile');
-
                                                                     file.onchange = function(){
                                                                         const fileList = file.files ; 
-
+                                                                        //절대경로 가져오기(연구중)
+                                                                        fileList = document.selection.createRange().text;
                                                                         //읽기
                                                                         const reader = new FileReader();
                                                                         reader.readAsDataURL(fileList [0]);
@@ -150,7 +150,7 @@
                                         <input type = "hidden" value = "<%=userInfo.ID%>" name = "ID">
                                 </tr>
                                 <tr>
-                                        <td>passWord  : </td> <td colspan="3"><input type = "text" placeholder="type new PW" name = "PW"></td>
+                                        <td>passWord  : </td> <td colspan="3"><input type = "text"id = "password" placeholder="type new PW" name = "PW"></td>
                                 </tr>
                                 <tr>
                                         <td>Address : </td> <td colspan = "3"><input type = "text" value = "<%=userInfo.Address.Street%>" name = "Street"> ,
@@ -160,12 +160,51 @@
                                     </tr>
                                     <!-- 마지막 가로는 각각의 버튼이 2개의 가로를 확장했다. -->
                                 <tr>
-                                        
-                                        <td colspan="2"><input type = "image" src = "../images/modify.jpg" onclick = "modiclick();" height = "75px" width = "200px"></td>
+                                                        <input type = "hidden" id = "socialMedia" value = "<%=userInfo.sns%>" name = "sns">
+                                                        <input type = "hidden" value = "<%=userInfo.img%>" name = "picture">
+                                                        <input type = "hidden" value = "<%=userInfo.PW%>" name = "originalPW">
+                                                        <input type = "hidden" value = "<%=userInfo._id%>" name = "objID">
+                                        <td colspan="2"><input type = "image" id = "modibutton" onclick="modifyAlert()" src = "../images/modify.jpg" height = "75px" width = "200px"></td>
                                                         <script>
-                                                            function modiclick(){
-                                                                if(req.body.PW == 0){alert('Unknown Password!');}
-                                                                alert('editing complete!');    
+                                                            const password = document.querySelector('#password');
+                                                            const sns = document.querySelector('#socialMedia');
+                                                            
+                                                            function modifyAlert(){
+                                                                if(sns.length >1){
+                                                                    if(password.length >= 1){
+                                                                        alert('this is password length' + password.length);
+                                                                        alert('SNS user cannot change password!');
+                                                                    }
+                                                                    else{
+                                                                        alert('profile successfully changed!');
+                                                                    }
+                                                                }
+                                                                else{
+                                                                    if(password.length ==0){
+                                                                        alert('invalid password');
+                                                                    }
+                                                                    else{
+                                                                        alert('profile successfully changed!');
+                                                                    }
+                                                                }
+                                                            }
+                                                            password.onchange = function(){
+                                                                if(sns.length !=0){
+                                                                    if(password.length >=1){
+                                                                        alert('SNS user cannot change password!');
+                                                                    }
+                                                                    else{
+                                                                        alert('profile successfully changed!');
+                                                                    }
+                                                                }
+                                                                else{
+                                                                    if(password.length ==0){
+                                                                        alert('invalid password');
+                                                                    }
+                                                                    else{
+                                                                        alert('profile successfully changed!');
+                                                                    }
+                                                                }
                                                             }
                                                         </script>
                                 </form>

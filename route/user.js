@@ -4,6 +4,7 @@ const userModel = require('../model/userModel');
 const passport = require('passport');
 const async = require('async');
 const cookieParser = require('cookie-parser');
+const sessionStorage = require('node-sessionstorage');
 
 
 //-----------------------------------------메인페이지(로그인화면)------------------------------------------------
@@ -18,7 +19,7 @@ router.get('/login/registeration', (req,res) =>{
 //가입정보를 데이터베이스에 저장
 router.post('/login/registered',(req,res) =>{
     const profile = new userModel;
-         profile.img.url = req.body.picture;
+         profile.img = req.body.picture;
          profile.Firstname = req.body.firstName;
          profile.Lastname = req.body.LastName;
          profile.ID = req.body.ID;
@@ -71,11 +72,8 @@ router.post('/login/registered',(req,res) =>{
                     }
                     else{
                         console.log('you pass comparepassword function');
-                        req.session.user = {
-                            ID : req.body.ID,
-                            PW : req.body.PW,
-                            authenticate : true
-                        }
+                        sessionStorage.setItem("localID",req.body.ID);
+                        sessionStorage.setItem("localPW",req.body.PW);
                         next();
                     }
                 })
@@ -88,8 +86,39 @@ router.post('/login/registered',(req,res) =>{
     })
     );
     router.get('/showprofile',(req,res)=>{
-        userModel.findOne({"ID" : req.session.user.ID}, (err,doc) =>{
+        userModel.findOne({"ID" : sessionStorage.getItem("localID")}, (err,doc) =>{
+            console.log('req.session.id : ',sessionStorage.getItem("localID"));
             console.log('show login user : ',doc)
+            return res.render('../views/profile.ejs',{'userInfo' : doc})
+        })
+    })
+    //네이버 계정으로 로그인 하기
+    function isLoggedIn(req,res,next){
+        if(!req.authenticate()){
+            return next();
+        }else{
+            red.render('../views/alterfrontpage.ejs');
+        }
+    }
+    //네이버 로그인 
+    router.get('/auth/naver',isLoggedIn, passport.authenticate('naver',{
+        successRedirect : '/showprofilesns',
+        failureRedirect : '/'
+    }))
+    //네이버 로그인 콜백 URL
+    router.get('/naver_oauth',passport.authenticate('naver',{
+        successRedirect : '/showprofilesns',
+        failureRedirect : '/',
+        failureFlash : true
+    }))
+
+    //모든 passport는 이 라우터 경로를 통과한다.
+    router.get('/showprofilesns',(req,res)=>{
+        //console.log('this is userinfo : ',req.session.user.sns);
+        //return res.render('../views/profile.ejs',{'userInfo' : })
+        //console.log('show something : ', userModel);
+        userModel.findOne({"sns" : sessionStorage.getItem('naversns'),"CID" : sessionStorage.getItem('naverCID'),"ID" : sessionStorage.getItem('naveremail')}, (err,doc) =>{
+            console.log('show login user : ',doc);
             return res.render('../views/profile.ejs',{'userInfo' : doc})
         })
     })
@@ -117,8 +146,8 @@ router.post('/main', (req,res) =>{
 }) 
 //edit 버튼
 router.post('/login/edit', (req,res)=>{
-    console.log('this is /login/edit');
-    userModel.findOne({"ID" : req.session.user.ID}).then( result =>{
+    console.log('this is /login/edit');//가지고온 히든 정보를 써라
+    userModel.findOne({"_id" : req.body.ID, "sns" : req.body.sns}).then( result =>{
         if(!result){
             return console.log('ID cannot find');
         }
@@ -129,10 +158,11 @@ router.post('/login/edit', (req,res)=>{
 })
 //프로필 수정창에서 입력받아온 정보를 ID로 찾아내서 수정한다.(client쪽에선 modify 버튼을 누른 상태)
 //수정할 데이터의 기존 정보를 삭제하고 수정된 정보를 새로 삽입 하는 방법을 시도 해봐라. 
+//=================================프로필 수정창====================================================================================================================
 router.post('/login/modicomplete', (req,res) =>{
     console.log('this is /login/edited router!')
     const profile = new userModel;//수정된 정보가 들어간 모델이다. 하지만 비밀번호는 bcrypt 되어 있지 안다. Bcrypt는 정보를 저장시에만 적용된다고 userModel.js에 명시 해놨다.
-                profile.img.url = req.body.imgInput;
+                profile.img = req.body.imgInput;
                 profile.Firstname = req.body.Firstname;
                 profile.Lastname = req.body.Lastname;
                 profile.ID = req.body.ID;
@@ -141,40 +171,84 @@ router.post('/login/modicomplete', (req,res) =>{
                 profile.Address.City = req.body.City;
                 profile.Address.State = req.body.State;
                 profile.Address.Country = req.body.Country;
-                if(profile.PW.length == 0 || profile.img.url.length ==0){
-                    return console.log('cannot unkown PW or URL');
+                profile.sns = req.body.sns;
+                profile._id = req.body.objID;
+
+                
+                if(profile.sns.length !=0){//연동계정
+                    if(profile.PW.length !=0){//패스워드를 바꿀려는 사람
+                        console.log(profile.sns+" User cannot change the password");
+                    }
+                    if(profile.img.length !=0){//프로필이미지를 바꿀려는 사람
+                        console.log(profile.sns+" User cannot change the image");
+                    }
+                    else{//연동계정이 아무문제없이 프로필을 수정하려할 때
+                        console.log('this is length of profile img : ',profile.img.length);
+                        profile.img = req.body.picture;
+                        profile.PW = req.body.originalPW;
+                        console.log('successfully changed.')
+                        modifyprocess(profile);
+                    }
                 }
-                else{
-                    userModel.findOne({"ID" : req.body.ID})
-                                                            .then(result =>{
-                                                                if(!result){
-                                                                    console.log('cannot find userinformation');
-                                                                }
-                                                                else{//findOne의 else이다.
-                                                                    console.log('this is profile',profile);//new information but not bcrypt password
-                                                                    console.log('this is result',result);//original information
-                                                                    userModel.deleteOne({"ID" : req.body.ID}, function(err){
-                                                                        if(err) return console.log('delete one is error');
-                                                                        else{//deleteOne의 else이다.
-                                                                            profile.save(function(err,doc){
-                                                                                if(err) return res.render('../views/fail.ejs',{error : err})
-                                                                                else{//save의 else이다.
-                                                                                    console.log('update complete');
-                                                                                    console.log('this is doc in save : ',doc);
-                                                                                    res.render('../views/profile.ejs',{'userInfo' : doc});
-                                                                                }
-                                                                            })
-                                                                        }
-                                                                    })
-                                                                }
-                                                            })
+                else{//비연동 계정
+                    if(profile.PW.length == 0 || profile.img.length ==0){//비밀번호와 프로필이미지가 공란이면
+                        console.log('this is session storage : ',sessionStorage.getItem("localPW"));
+                        console.log('this is oringal password : ',req.body.originalPW);
+                        if(profile.PW.length==0){
+                            profile.PW = req.body.originalPW;
                         }
+                        else{
+                            profile.img = req.body.picture;
+                        }
+                        modifyprocess(profile);
+                    }
+                    else{
+                        console.log('local member changed.');
+                        modifyprocess(profile);
+                            }
+                }
+                function modifyprocess(profile){//프로필을 수정하는 기능
+                    // userModel.findOne({"ID" : req.body.ID, "sns" : req.body.sns})
+                    // .then(result =>{
+                    //     if(!result){
+                    //         console.log('cannot find userinformation');
+                    //     }
+                    //     else{//findOne의 else이다.
+                    //         console.log('this is profile',profile);//new information but not bcrypt password
+                    //         console.log('this is result',result);//original information
+                    //         userModel.deleteOne({"ID" : req.body.ID, "sns" : req.body.sns}, function(err){
+                    //             if(err) return console.log('delete one is error');
+                    //             else{//deleteOne의 else이다.
+                    //                 profile.save(function(err,doc){
+                    //                     if(err) return res.render('../views/fail.ejs',{error : err})
+                    //                     else{//save의 else이다.
+                    //                         console.log('update complete');
+                    //                         console.log('this is doc in save : ',doc);
+                    //                         res.render('../views/profile.ejs',{'userInfo' : doc});
+                    //                     }
+                    //                 })
+                    //             }
+                    //         })
+                    //     }
+                    // })
+                    userModel.updateOne({_id : req.body.objID},profile,{upsert : true}, (err, result)=>{
+                        if(err){
+                            console.log('error when you update : ',err);
+                            return res.render('../views/fail.ejs',{error : err})
+                        }
+                        else{
+                            console.log('update complete!');
+                            console.log('this is the update info : ', result)
+                            return res.render('../views/profile.ejs',{'userInfo' : profile})
+                        }
+                    })
+                }
                                         })
 //-----------------------------------게시글 삽입 기능-----------------------------
 router.post('/main/post', (req,res) =>{
     return res.render('../views/postpage.ejs',{'Lastname' : req.body.Lastname});
 })
-//-----------------------------------삽입기능------------------------------------
+//-----------------------------------관리자가 유저를 임의로 추가하는 기능------------------------------------
 router.post('/api/task/insert', (req,res) =>{
     return res.render('../views/insertconsole.ejs');
 })
@@ -253,7 +327,7 @@ router.post('/api/task/modified',(req,res) =>{
                                        'City'      : req.body.City,
                                        'State'     : req.body.State,
                                        'Country'   : req.body.Country},
-                          'img' : {url : req.body.picture}
+                          'img' : req.body.picture
                         }
             userModel.findByIdAndUpdate({_id : req.body._id},Newdata,{upsert : true},(err,doc)=>{
                 if(err){
