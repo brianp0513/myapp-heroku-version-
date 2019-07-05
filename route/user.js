@@ -176,21 +176,26 @@ router.post('/login/modicomplete', (req,res) =>{
 
                 
                 if(profile.sns.length !=0){//연동계정
-                    if(profile.PW.length !=0){//패스워드를 바꿀려는 사람
-                        console.log(profile.sns+" User cannot change the password");
+                    console.log('this is PW. length : ', profile.PW.length);
+                    if(req.body.PW != 0){//패스워드를 바꿀려는 사람
+                        return console.log(profile.sns+" User cannot change the password");
+                        
                     }
+                    console.log('you pass PW condition');
                     if(profile.img.length !=0){//프로필이미지를 바꿀려는 사람
-                        console.log(profile.sns+" User cannot change the image");
+                        return console.log(profile.sns+" User cannot change the image");
+                        
                     }
                     else{//연동계정이 아무문제없이 프로필을 수정하려할 때
                         console.log('this is length of profile img : ',profile.img.length);
-                        profile.img = req.body.picture;
+                        profile.img = req.body.picture;//공란으로 두면 말 그대로 아무것도 적용 안된 것도 되기때문에 전 이미지 링크로 돌린다.
                         profile.PW = req.body.originalPW;
-                        console.log('successfully changed.')
                         modifyprocess(profile);
+                        console.log('successfully changed.');
                     }
                 }
                 else{//비연동 계정
+                console.log('you pass local account statement');
                     if(profile.PW.length == 0 || profile.img.length ==0){//비밀번호와 프로필이미지가 공란이면
                         console.log('this is session storage : ',sessionStorage.getItem("localPW"));
                         console.log('this is oringal password : ',req.body.originalPW);
@@ -208,29 +213,6 @@ router.post('/login/modicomplete', (req,res) =>{
                             }
                 }
                 function modifyprocess(profile){//프로필을 수정하는 기능
-                    // userModel.findOne({"ID" : req.body.ID, "sns" : req.body.sns})
-                    // .then(result =>{
-                    //     if(!result){
-                    //         console.log('cannot find userinformation');
-                    //     }
-                    //     else{//findOne의 else이다.
-                    //         console.log('this is profile',profile);//new information but not bcrypt password
-                    //         console.log('this is result',result);//original information
-                    //         userModel.deleteOne({"ID" : req.body.ID, "sns" : req.body.sns}, function(err){
-                    //             if(err) return console.log('delete one is error');
-                    //             else{//deleteOne의 else이다.
-                    //                 profile.save(function(err,doc){
-                    //                     if(err) return res.render('../views/fail.ejs',{error : err})
-                    //                     else{//save의 else이다.
-                    //                         console.log('update complete');
-                    //                         console.log('this is doc in save : ',doc);
-                    //                         res.render('../views/profile.ejs',{'userInfo' : doc});
-                    //                     }
-                    //                 })
-                    //             }
-                    //         })
-                    //     }
-                    // })
                     userModel.updateOne({_id : req.body.objID},profile,{upsert : true}, (err, result)=>{
                         if(err){
                             console.log('error when you update : ',err);
@@ -238,7 +220,7 @@ router.post('/login/modicomplete', (req,res) =>{
                         }
                         else{
                             console.log('update complete!');
-                            console.log('this is the update info : ', result)
+                            console.log('this is the update info : ', profile)
                             return res.render('../views/profile.ejs',{'userInfo' : profile})
                         }
                     })

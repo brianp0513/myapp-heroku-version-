@@ -27,8 +27,8 @@ const store = new MongoDBStore({
 
 //mongoose 구동을 위한 패키지
 const mongoose = require('mongoose');
-//const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';로컬DB url
-const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
+const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
+//const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
 console.log('connecting to the database!');
 mongoose.Promise = global.Promise;
 mongoose.connect(databaseurl);
@@ -175,13 +175,13 @@ app.use('*', (req, res ) => {
 })
 
 //서버 생성(로컬 서버)
-// http.createServer(app).listen(app.get('port'),function(){
-//     console.log('Express server is activated Port : ',app.get('port'))
-// })
+http.createServer(app).listen(app.get('port'),function(){
+    console.log('Express server is activated Port : ',app.get('port'))
+})
 //서버 생성
-app.listen(process.env.PORT || 8080,function(){
-    console.log("Express server listening on port %d in %s mode",this.address().port,app.settings.env)
-});
+// app.listen(process.env.PORT || 8080,function(){
+//     console.log("Express server listening on port %d in %s mode",this.address().port,app.settings.env)
+// });
 //데이터베이스 닫기
 console.log("closing database");
 database.on('close',function(){

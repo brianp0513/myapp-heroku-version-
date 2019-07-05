@@ -43,11 +43,65 @@
                 position: absolute;
               }
     </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+
     <script>
+        function onload() { 
+
+        //let temp = Document.getElementById("modibutton");
+        var password = document.getElementById('password');
+        var sns = document.querySelector("#socialMedia");
+        var img = document.querySelector('#getfile');
+        
+        }
+
+        function modifyAlert(){
+            console.log("12" +temp);
+
+            console.log("12" +foo);
+            //alert("mouse entered!");
+            console.log("12" +password);
+                // alert('this is password length' + foo);
+            //   alert('this is password length' + temp);
+            alert('this is password length' + password);
+            if(sns.length != 0){
+                    alert('this is password length' + password.length);
+                if(password.length > 0){
+
+                    
+                    alert('SNS user cannot change password!');
+                }
+                if(img.length > 0){
+                        alert('SNS user cannot change profile image!');
+                }
+                else{
+                    alert(sns.length);
+                    alert('profile successfully changed!');
+                }
+            }
+            else{
+                if(password.length ==0){
+                    alert('invalid password');
+                }
+                else{
+                    alert('profile successfully changed!');
+                }
+            }
+        }
+        password.onchange = function(){
+            if(sns.length > 0){
+                if(password.length > 0){
+                    alert('SNS user cannot change password!');
+                }
+            }
+            else{
+                if(password.length ==0){
+                    alert('invalid password');
+                }
+            }
+        }
+    
+
+
         function readURL(input){
             if(input.files && input.files[0]){
                 const reader = new FileReader();
@@ -63,9 +117,21 @@
         $("#imgInput").change(function(){
             readURL(this);
         });
+
+
+
+
     </script>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
 </head>
-<body>
+<body onload="onload();">
 
         <div class = "logout" style = "text-align: right">
                 <h1 style ="background-color: dimgray">
@@ -99,8 +165,6 @@
                                                                     const file = document.querySelector('#getfile');
                                                                     file.onchange = function(){
                                                                         const fileList = file.files ; 
-                                                                        //절대경로 가져오기(연구중)
-                                                                        fileList = document.selection.createRange().text;
                                                                         //읽기
                                                                         const reader = new FileReader();
                                                                         reader.readAsDataURL(fileList [0]);
@@ -161,52 +225,11 @@
                                     <!-- 마지막 가로는 각각의 버튼이 2개의 가로를 확장했다. -->
                                 <tr>
                                                         <input type = "hidden" id = "socialMedia" value = "<%=userInfo.sns%>" name = "sns">
-                                                        <input type = "hidden" value = "<%=userInfo.img%>" name = "picture">
-                                                        <input type = "hidden" value = "<%=userInfo.PW%>" name = "originalPW">
+                                                        <input type = "hidden"  id = "img" value = "<%=userInfo.img%>" name = "picture">
+                                                        <input type = "hidden" id = "temp" value = "<%=userInfo.PW%>" name = "originalPW">
                                                         <input type = "hidden" value = "<%=userInfo._id%>" name = "objID">
-                                        <td colspan="2"><input type = "image" id = "modibutton" onclick="modifyAlert()" src = "../images/modify.jpg" height = "75px" width = "200px"></td>
-                                                        <script>
-                                                            const password = document.querySelector('#password');
-                                                            const sns = document.querySelector('#socialMedia');
-                                                            
-                                                            function modifyAlert(){
-                                                                if(sns.length >1){
-                                                                    if(password.length >= 1){
-                                                                        alert('this is password length' + password.length);
-                                                                        alert('SNS user cannot change password!');
-                                                                    }
-                                                                    else{
-                                                                        alert('profile successfully changed!');
-                                                                    }
-                                                                }
-                                                                else{
-                                                                    if(password.length ==0){
-                                                                        alert('invalid password');
-                                                                    }
-                                                                    else{
-                                                                        alert('profile successfully changed!');
-                                                                    }
-                                                                }
-                                                            }
-                                                            password.onchange = function(){
-                                                                if(sns.length !=0){
-                                                                    if(password.length >=1){
-                                                                        alert('SNS user cannot change password!');
-                                                                    }
-                                                                    else{
-                                                                        alert('profile successfully changed!');
-                                                                    }
-                                                                }
-                                                                else{
-                                                                    if(password.length ==0){
-                                                                        alert('invalid password');
-                                                                    }
-                                                                    else{
-                                                                        alert('profile successfully changed!');
-                                                                    }
-                                                                }
-                                                            }
-                                                        </script>
+                                        <td colspan="2"><input type = "image"  id = "modibutton" onclick="modifyAlert()" src = "../images/modify.jpg" height = "75px" width = "200px"></td>
+
                                 </form>
                                 <form method ="GET" action= "/showprofile">
                                         <td colspan="2"><input type = "hidden" value = "<%=userInfo.ID%>" name = "ID">
