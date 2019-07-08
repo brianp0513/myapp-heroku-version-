@@ -21,14 +21,14 @@ const session = require('express-session');
 const sessionStorage = require('node-sessionstorage');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
-    url : 'mongodb://heroku_80vlq7kx:hang051#@ds213255.mlab.com:13255/heroku_80vlq7kx',
+    url : 'mongodb://sangeonpark:hang0513@ds213255.mlab.com:13255/heroku_80vlq7kx',
     collection : 'Sessions'
 });
 
 
 //mongoose 구동을 위한 패키지
 const mongoose = require('mongoose');
-const databaseurl = 'mongodb://heroku_80vlq7kx:hang051#@ds213255.mlab.com:13255/heroku_80vlq7kx'
+const databaseurl = 'mongodb://sangeonpark:hang0513@ds213255.mlab.com:13255/heroku_80vlq7kx'
 // const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
 //const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
 console.log('connecting to the database!');
