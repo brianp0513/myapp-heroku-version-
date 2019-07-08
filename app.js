@@ -21,14 +21,15 @@ const session = require('express-session');
 const sessionStorage = require('node-sessionstorage');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
-    url : 'mongodb://localhost:27017/Thw2modimodi',
+    url : 'mongodb://tonyha:Tony3590@ds213255.mlab.com:13255/heroku_80vlq7kx',
     collection : 'Sessions'
 });
 
 
 //mongoose 구동을 위한 패키지
 const mongoose = require('mongoose');
-const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
+const databaseurl = 'mongodb://tonyha:Tony3590@ds213255.mlab.com:13255/heroku_80vlq7kx'
+// const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
 //const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
 console.log('connecting to the database!');
 mongoose.Promise = global.Promise;
@@ -113,7 +114,7 @@ passport.use('local-login', new LocalStrategy({
 passport.use('naver', new NaverStrategy({
     clientID : 'LcjFtyxQo_IDm2x_THBO',
     clientSecret : 'TLmU0KZOkh',
-    callbackURL : 'http://localhost:8080/naver_oauth'
+    callbackURL : 'https://samplev100.herokuapp.com/naver_oauth'
 }, (accessToken, refreshToken, profile, done)=>{
     console.log(profile);//가지고온 네이버 회원 정보 display
 
@@ -171,7 +172,7 @@ passport.use('naver', new NaverStrategy({
 passport.use('google', new GoogleStrategy({
     clientID : '917240113678-iclsglbj3rhqa26o3ln8hi87jr6jj0oi.apps.googleusercontent.com',
     clientSecret : 'CIPIq9EldT669j40L7ChRxqN',
-    callbackURL : 'http://localhost:8080/google_oauth'
+    callbackURL : 'https://samplev100.herokuapp.com/google_oauth'
 },  (accessToken, refreshToken, profile, done)=>{
     console.log(profile);
     sessionStorage.setItem("sns",profile.provider);
@@ -197,7 +198,7 @@ passport.use('google', new GoogleStrategy({
                     }
                     else{
                         //여기다 필요한 세션 정ㅈ보 
-                        return done(null, user);
+                        return done(null, user)
                     }
                 }
             )
