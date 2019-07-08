@@ -113,8 +113,7 @@ router.post('/login/registered',(req,res) =>{
         failureFlash : true
     }))
     //구글 로그인
-    router.get('/auth/google',isLoggedIn, passport.authenticate('google',{
-        
+    router.get('/auth/google',isLoggedIn, passport.authenticate('google',{    
     }));
     //구글 로그인 콜백 URL
      router.get('/google_oauth',passport.authenticate('google',{
@@ -124,6 +123,16 @@ router.post('/login/registered',(req,res) =>{
                 ],
                 successRedirect : '/showprofilesns',
                 failureRedirect : '/'  
+    }))
+    //페이스북 로그인
+    router.get('/auth/facebook',isLoggedIn, passport.authenticate('facebook',{    
+    }));
+    //페이스북 로그인 콜백 URL
+    router.get('/facebook_oauth',passport.authenticate('facebook',{
+        scope : 'email',
+        successRedirect : '/showprofilesns',
+        failureRedirect : '/',
+        failureFlash : true
     }))
     //모든 SNSpassport는 이 라우터 경로를 통과한다.
     router.get('/showprofilesns',(req,res)=>{

@@ -13,6 +13,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const NaverStrategy = require('passport-naver').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const helmet = require('helmet');//웹서버와 클라이언트는 req,res로 받는데 해커가 이 과정에서 헤더를 가로챌 수 있기 떄문에 헤더를 보안해준다. 
@@ -200,11 +201,55 @@ passport.use('google', new GoogleStrategy({
         }
     })
 }));
+//=======================================페이스북 passport설정==============================================
+passport.use('facebook', new FacebookStrategy({
+    clientID : '364089517625336',
+    clientSecret : '1b993ff60379a741daf9b6e04013721d',
+    callbackURL : 'https://myappv202.herokuapp.com/facebook_oauth'
+},  (accessToken, refreshToken, profile, done)=>{
+    console.log(profile);
+    
+    // userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
+    //     if(err){return done(err);}
+    //     if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
+    //         console.log('cannot find user so create new account');
+    //         userModel.create({
+    //             sns : profile.provider,
+    //             Firstname : profile._json.family_name,
+    //             Lastname : profile._json.given_name,
+    //             CID : profile.id,
+    //             ID : profile._json.email,
+    //             PW : '',
+    //             Address : {Street : '',City : '',State : '', Country : ''},
+    //             img : profile._json.picture,
+    //             token : accessToken}, function(err, user){
+    //                 if(err) {
+    //                     console.log('error detected!');
+    //                     return done(err);
+    //                 }
+    //                 else{
+    //                     //여기다 필요한 세션 정보(오브젝트 아이디)를 셋팅
+    //                     return done(null, user)
+    //                 }
+    //             }
+    //         )
+    //     }
+    //     else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
+    //         console.log('this naver account was accessed in this website just go through login');
+    //         console.log('this is naver userInfo : ',user);
+    //         userModel.findById(user._id,(err,user)=>{
+    //             if(err){
+    //                 return done(err);
+    //             }
+    //             else{
+    //                 console.log('this is user in app.js : ', user);
+    //                  done(null, user);
+    //             }
+    //         })
+    //     }
+    // })
+}));
 //라우터 경로들 
-
-
-
-
 app.use('/',userRoute);
 app.use('*', (req, res ) => {
     return res.render('404.ejs')
