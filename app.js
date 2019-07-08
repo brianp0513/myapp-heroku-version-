@@ -197,7 +197,7 @@ passport.use('google', new GoogleStrategy({
                         return done(err);
                     }
                     else{
-                        //여기다 필요한 세션 정ㅈ보 
+                        //여기다 필요한 세션 정보(오브젝트 아이디)를 셋팅
                         return done(null, user)
                     }
                 }
