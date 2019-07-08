@@ -210,15 +210,16 @@ app.use('*', (req, res ) => {
     return res.render('404.ejs')
 })
 
-//서버 생성(로컬 서버)
+//서버 생성
 http.createServer(app).listen(process.env.PORT||app.get('port'),function(){
     console.log('at least you upload in right ')
     console.log('Express server is activated Port : ',app.get('port'))
 })
-//서버 생성
-// app.listen(process.env.PORT || 8080,function(){
-//     console.log("Express server listening on port %d in %s mode",this.address().port,app.settings.env)
-// });
+//서버 생성(기존의 로컬을 이용한 연결 방법)
+// http.createServer(app).listen(app.get('port'),function(){
+//     console.log('at least you upload in right ')
+//     console.log('Express server is activated Port : ',app.get('port'))
+// })
 //데이터베이스 닫기
 console.log("closing database");
 database.on('close',function(){
