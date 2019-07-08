@@ -24,7 +24,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 
 //mongoose 구동을 위한 패키지
 const mongoose = require('mongoose');
-const databaseurl = 'mongodb://sangeonpark:hang0513@ds213255.mlab.com:13255/heroku_80vlq7kx'
+const databaseurl = 'mongodb://sangeonpark:hang0513@ds249017.mlab.com:49017/heroku_9qww56hv'
 // const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
 //const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
 console.log('connecting to the database!');
@@ -96,7 +96,7 @@ passport.use('local-login', new LocalStrategy({
 passport.use('naver', new NaverStrategy({
     clientID : 'LcjFtyxQo_IDm2x_THBO',
     clientSecret : 'TLmU0KZOkh',
-    callbackURL : 'https://samplev100.herokuapp.com/naver_oauth'
+    callbackURL : 'https://myappv202.herokuapp.com/naver_oauth'
 }, (accessToken, refreshToken, profile, done)=>{
     console.log(profile);//가지고온 네이버 회원 정보 display
 
@@ -154,7 +154,7 @@ passport.use('naver', new NaverStrategy({
 passport.use('google', new GoogleStrategy({
     clientID : '917240113678-iclsglbj3rhqa26o3ln8hi87jr6jj0oi.apps.googleusercontent.com',
     clientSecret : 'CIPIq9EldT669j40L7ChRxqN',
-    callbackURL : 'https://samplev100.herokuapp.com/google_oauth'
+    callbackURL : 'https://myappv202.herokuapp.com/google_oauth'
 },  (accessToken, refreshToken, profile, done)=>{
     console.log(profile);
     sessionStorage.setItem("sns",profile.provider);
