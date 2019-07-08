@@ -20,10 +20,6 @@ const assert = require('assert');
 const session = require('express-session');
 const sessionStorage = require('node-sessionstorage');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const store = new MongoDBStore({
-    url : 'mongodb://sangeonpark:hang0513@ds213255.mlab.com:13255/heroku_80vlq7kx',
-    collection : 'Sessions'
-});
 
 
 //mongoose 구동을 위한 패키지
@@ -50,15 +46,6 @@ app.use(bodyPaser.urlencoded({extended : true}));
 app.use(bodyPaser.json());
 app.use(static(path.join(__dirname,'/')));
 app.use(flash());
-//세션 설정
-app.use(session({
-    secret : 'JAIfvnjoisdfhubjdsi',//세션 설정시 의 key값이다. 불특정한 값을 사용
-    resave : true,//세션을 저장하고 불러오는 과정에서 세션을 다시 저장할 건지 정하는 것
-    saveUninitialized : true,//세션을 저장할 때, 초기화 여부를 묻는다.
-    cookie : {maxAge : 3600000, httpOnly : true},//쿠키설정 :  maxAge는 시간(밀리세컨드 단위)설정 httponly : true = 보안 목적
-    store : store,
-    rolling : true
-}))
 //헬멧 보안모듈 설정
 app.use(helmet.hsts({
     maxAge : 10886400000,
@@ -77,11 +64,6 @@ passport.deserializeUser(function(ID,done){
     userModel.findOne({ID : ID}, function(err, user){
         done(err, user);
     });
-});
-//Catch errors
-store.on('error', function(error){
-    assert.ifError(error);
-    assert.ok(false);
 });
 //==========================local passport설정=================================================
 passport.use('local-login', new LocalStrategy({
@@ -230,6 +212,7 @@ app.use('*', (req, res ) => {
 
 //서버 생성(로컬 서버)
 http.createServer(app).listen(process.env.PORT||app.get('port'),function(){
+    console.log('at least you upload in right ')
     console.log('Express server is activated Port : ',app.get('port'))
 })
 //서버 생성
