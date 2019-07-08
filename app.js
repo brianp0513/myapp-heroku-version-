@@ -12,6 +12,7 @@ const userModel = require('./model/userModel');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const NaverStrategy = require('passport-naver').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const helmet = require('helmet');//웹서버와 클라이언트는 req,res로 받는데 해커가 이 과정에서 헤더를 가로챌 수 있기 떄문에 헤더를 보안해준다. 
@@ -120,13 +121,14 @@ passport.use('naver', new NaverStrategy({
     const FN = fullname.substring(0,1);//성만 따오기
     const LN = fullname.substring(1,3);//이름만 따오기
     //user.js에 필요한 최소한의 정보를 sessionStorage에 저장
-    sessionStorage.setItem("naversns",profile.provider);
-    sessionStorage.setItem("naverCID",profile.id);
-    sessionStorage.setItem("naveremail",profile._json.email);
+    sessionStorage.setItem("sns",profile.provider);
+    sessionStorage.setItem("CID",profile.id);
+    sessionStorage.setItem("email",profile._json.email);
     
     userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
         if(err){return done(err);}
         if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
+            
             console.log('cannot find user so create new account');
             console.log(user);
             userModel.create({
@@ -144,6 +146,7 @@ passport.use('naver', new NaverStrategy({
                         return done(err);
                     }
                     else{
+                        //여기 session Storage에 오브젝트 아이디를 저장후 프로필을 찾는데 사용한다.
                         return done(null, user);
                     }
                 }
@@ -164,6 +167,56 @@ passport.use('naver', new NaverStrategy({
         }
     })
 }))
+//==============================구글 passport 설정=======================================
+passport.use('google', new GoogleStrategy({
+    clientID : '917240113678-iclsglbj3rhqa26o3ln8hi87jr6jj0oi.apps.googleusercontent.com',
+    clientSecret : 'CIPIq9EldT669j40L7ChRxqN',
+    callbackURL : 'http://localhost:8080/google_oauth'
+},  (accessToken, refreshToken, profile, done)=>{
+    console.log(profile);
+    sessionStorage.setItem("sns",profile.provider);
+    sessionStorage.setItem("CID",profile.id);
+    sessionStorage.setItem("email",profile._json.email);
+    userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
+        if(err){return done(err);}
+        if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
+            console.log('cannot find user so create new account');
+            userModel.create({
+                sns : profile.provider,
+                Firstname : profile._json.family_name,
+                Lastname : profile._json.given_name,
+                CID : profile.id,
+                ID : profile._json.email,
+                PW : '',
+                Address : {Street : '',City : '',State : '', Country : ''},
+                img : profile._json.picture,
+                token : accessToken}, function(err, user){
+                    if(err) {
+                        console.log('error detected!');
+                        return done(err);
+                    }
+                    else{
+                        //여기다 필요한 세션 정ㅈ보 
+                        return done(null, user);
+                    }
+                }
+            )
+        }
+        else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
+            console.log('this naver account was accessed in this website just go through login');
+            console.log('this is naver userInfo : ',user);
+            userModel.findById(user._id,(err,user)=>{
+                if(err){
+                    return done(err);
+                }
+                else{
+                    console.log('this is user in app.js : ', user);
+                     done(null, user);
+                }
+            })
+        }
+    })
+}));
 //라우터 경로들 
 
 

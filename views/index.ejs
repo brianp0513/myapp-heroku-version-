@@ -50,7 +50,7 @@
 <body >
     <div class ="bgimg">
             <div class = "logout">
-                            <form method = "POST" action = "/login/progress">
+                            <form method = "GET" action = "/showprofilesns">
                                 <input type = "submit" class = "logout" value = "Hello, <%=userInfo[0].Lastname%>">
                                 <input type = "hidden" value = "<%=userInfo[0].ID%>" name = "ID">
                                 <input type = "hidden" value = "<%=userInfo[0].PW%>" name = "PW">

@@ -71,6 +71,7 @@ router.post('/login/registered',(req,res) =>{
                         return console.log('Invalid password');
                     }
                     else{
+                        //인풋받은 ID와 패스워드를 찾아 오브젝트 아이디를 session storage에 저장하여 이걸 프로필 창에 띄우는데 사용한다.
                         console.log('you pass comparepassword function');
                         sessionStorage.setItem("localID",req.body.ID);
                         sessionStorage.setItem("localPW",req.body.PW);
@@ -111,13 +112,25 @@ router.post('/login/registered',(req,res) =>{
         failureRedirect : '/',
         failureFlash : true
     }))
-
-    //모든 passport는 이 라우터 경로를 통과한다.
+    //구글 로그인
+    router.get('/auth/google',isLoggedIn, passport.authenticate('google',{
+        
+    }));
+    //구글 로그인 콜백 URL
+     router.get('/google_oauth',passport.authenticate('google',{
+        scope : [//'https://www.googleapis.com/auth/plus.login',//기본 제공된 코드였는데 몇가지 정보(이메일)가 누락 되어 있었다.
+                 'https://www.googleapis.com/auth/userinfo.profile',//사용자 프로필 제공
+                 'https://www.googleapis.com/auth/userinfo.email'//사용자 이메일 제공                
+                ],
+                successRedirect : '/showprofilesns',
+                failureRedirect : '/'  
+    }))
+    //모든 SNSpassport는 이 라우터 경로를 통과한다.
     router.get('/showprofilesns',(req,res)=>{
         //console.log('this is userinfo : ',req.session.user.sns);
         //return res.render('../views/profile.ejs',{'userInfo' : })
         //console.log('show something : ', userModel);
-        userModel.findOne({"sns" : sessionStorage.getItem('naversns'),"CID" : sessionStorage.getItem('naverCID'),"ID" : sessionStorage.getItem('naveremail')}, (err,doc) =>{
+        userModel.findOne({"sns" : sessionStorage.getItem('sns'),"CID" : sessionStorage.getItem('CID'),"ID" : sessionStorage.getItem('email')}, (err,doc) =>{
             console.log('show login user : ',doc);
             return res.render('../views/profile.ejs',{'userInfo' : doc})
         })
