@@ -229,7 +229,7 @@ app.use('*', (req, res ) => {
 })
 
 //서버 생성(로컬 서버)
-http.createServer(app).listen(app.get('port'),function(){
+http.createServer(app).listen(process.env.PORT||app.get('port'),function(){
     console.log('Express server is activated Port : ',app.get('port'))
 })
 //서버 생성
