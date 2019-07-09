@@ -208,20 +208,22 @@ passport.use('facebook', new FacebookStrategy({
     callbackURL : 'https://myappv202.herokuapp.com/facebook_oauth'
 },  (accessToken, refreshToken, profile, done)=>{
     console.log('this is profile',profile);
-    
+    sessionStorage.setItem("sns",profile.provider);
+    sessionStorage.setItem("CID",profile.id);
+    sessionStorage.setItem("email",profile.id);
     userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
         if(err){return done(err);}
         if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
             console.log('cannot find user so create new account');
             userModel.create({
                 sns : profile.provider,
-                Firstname : profile._json.family_name,
-                Lastname : profile._json.given_name,
+                Firstname : profile.familyName,
+                Lastname : profile._json.givenName,
                 CID : profile.id,
-                ID : profile._json.email,
+                ID : profile._json.id,
                 PW : '',
                 Address : {Street : '',City : '',State : '', Country : ''},
-                img : profile._json.picture,
+                img : 'https://graph.facebook.com/'+profile.id+'/picture?',
                 token : accessToken}, function(err, user){
                     if(err) {
                         console.log('error detected!');
@@ -233,6 +235,7 @@ passport.use('facebook', new FacebookStrategy({
                     }
                 }
             )
+
         }
         else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
             console.log('this naver account was accessed in this website just go through login');

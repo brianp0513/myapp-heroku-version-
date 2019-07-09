@@ -5,8 +5,8 @@ const bcrypt = require('bcrypt');//비크립트 사용 선언
 //스키마 생성
 const SampleSchema = mongoose.Schema({
         sns : {type : String, default : 'local'},
-        Firstname : String,
-        Lastname : String,
+        Firstname : {type : String, undefined : 'undefined'},
+        Lastname : {type : String, undefined : 'undefined'},
         CID : {type : String, default : 'local'},
         ID : String,
         PW : String,
