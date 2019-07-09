@@ -209,45 +209,45 @@ passport.use('facebook', new FacebookStrategy({
 },  (accessToken, refreshToken, profile, done)=>{
     console.log('this is profile',profile);
     
-    // userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
-    //     if(err){return done(err);}
-    //     if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
-    //         console.log('cannot find user so create new account');
-    //         userModel.create({
-    //             sns : profile.provider,
-    //             Firstname : profile._json.family_name,
-    //             Lastname : profile._json.given_name,
-    //             CID : profile.id,
-    //             ID : profile._json.email,
-    //             PW : '',
-    //             Address : {Street : '',City : '',State : '', Country : ''},
-    //             img : profile._json.picture,
-    //             token : accessToken}, function(err, user){
-    //                 if(err) {
-    //                     console.log('error detected!');
-    //                     return done(err);
-    //                 }
-    //                 else{
-    //                     //여기다 필요한 세션 정보(오브젝트 아이디)를 셋팅
-    //                     return done(null, user)
-    //                 }
-    //             }
-    //         )
-    //     }
-    //     else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
-    //         console.log('this naver account was accessed in this website just go through login');
-    //         console.log('this is naver userInfo : ',user);
-    //         userModel.findById(user._id,(err,user)=>{
-    //             if(err){
-    //                 return done(err);
-    //             }
-    //             else{
-    //                 console.log('this is user in app.js : ', user);
-    //                  done(null, user);
-    //             }
-    //         })
-    //     }
-    // })
+    userModel.findOne({sns : profile.provider,CID : profile.id},(err,user)=>{
+        if(err){return done(err);}
+        if(!user){//해당 연동 계정이 없으면 내 웹사이트 DB에 없으면 새로 계정을 연동 계정을 이용하여 만든다.
+            console.log('cannot find user so create new account');
+            userModel.create({
+                sns : profile.provider,
+                Firstname : profile._json.family_name,
+                Lastname : profile._json.given_name,
+                CID : profile.id,
+                ID : profile._json.email,
+                PW : '',
+                Address : {Street : '',City : '',State : '', Country : ''},
+                img : profile._json.picture,
+                token : accessToken}, function(err, user){
+                    if(err) {
+                        console.log('error detected!');
+                        return done(err);
+                    }
+                    else{
+                        //여기다 필요한 세션 정보(오브젝트 아이디)를 셋팅
+                        return done(null, user)
+                    }
+                }
+            )
+        }
+        else{//해당 연동 계정이 내 웹사이트에 있으면 접속날짜를 갱신(이기능은 미구현이지만 써놓긴 하겠다.)하고 접속.
+            console.log('this naver account was accessed in this website just go through login');
+            console.log('this is naver userInfo : ',user);
+            userModel.findById(user._id,(err,user)=>{
+                if(err){
+                    return done(err);
+                }
+                else{
+                    console.log('this is user in app.js : ', user);
+                     done(null, user);
+                }
+            })
+        }
+    })
 }));
 //라우터 경로들 
 app.use('/',userRoute);

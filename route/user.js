@@ -129,7 +129,7 @@ router.post('/login/registered',(req,res) =>{
     }));
     //페이스북 로그인 콜백 URL
     router.get('/facebook_oauth',passport.authenticate('facebook',{
-        scope : ['email','public_profile'],
+        scope : ['public_profile','email'],
         successRedirect : '/showprofilesns',
         failureRedirect : '/',
         failureFlash : true
@@ -289,94 +289,6 @@ router.post('/api/task', function(req,res){
                         
                     }
                 })
-            }
-        })
-})
-//---------------------------------------수정기능----------------------------------
-//해당 정보의 존재 유무를 확인후 콘솔창인지 에러창인지를 띄워준다.
-router.post('/api/task/modifying/',(req,res) =>{
-    console.log("this is modifying router!");
-    userId = req.query.userId;
-    console.log('this is userId : ',req.query.userId);
-    userModel.findById(userId)
-                              .then(result =>{
-                        if(!result){
-                                      console.log("userId not found");
-                                      alert("userId not found");
-                                      datas.find()
-                                      .then( custList =>{
-                                          if(!custList){
-                                              return res.render('../views/fail.ejs',{error : err})
-                                          }
-                                          else{
-                                              console.log('this is userLists :'+ custList);
-                                              return res.render('../views/index.ejs',{'custList' : custList}) 
-                                          }
-                                      }) 
-                                    }
-                        else{
-                                console.log("userID found!");
-                                res.render('../views/modifyconsole.ejs',{'modiinfo' : result})
-                            }
-                              })
-
-})
-//업데이트할 정보를 업데이트 시키는 부분
-router.post('/api/task/modified',(req,res) =>{
-         const Newdata = {'Firstname' : req.body.Firstname,
-                          'Lastname'  : req.body.Lastname,
-                          'ID'        : req.body.ID,
-                          'PW'        : req.body.PW,
-                           Address :{  'Street'    : req.body.Street,
-                                       'City'      : req.body.City,
-                                       'State'     : req.body.State,
-                                       'Country'   : req.body.Country},
-                          'img' : req.body.picture
-                        }
-            userModel.findByIdAndUpdate({_id : req.body._id},Newdata,{upsert : true},(err,doc)=>{
-                if(err){
-                    res.render('../views/fail.ejs',{error : err})
-                        }
-                else{
-                    console.log('update complete!');
-                    const datas = userModel;
-                    datas.find()
-                    .then( userLists =>{
-                        if(!userLists){
-                            //업데이트중 문제가 생기면 fail.ejs로 보낸다.
-                            return res.render('../views/fail.ejs',{error : err})
-                        }
-                        else{
-                            //업데이트 완료시 index.ejs로 보낸다.
-                            console.log('this is userLists :'+ userLists);
-                            return res.render('../views/index.ejs',{'custList' : userLists}) 
-                        }
-                    })   
-                }        
-            })
-})
-//---------------------------------------삭제기능----------------------------------
-router.post('/api/task/delete/',(req,res) =>{
-    userId = req.query.userId;
-        userModel.findByIdAndDelete({_id : userId},(err,doc) =>{
-            if(err){
-                res.render('../views/fail.ejs',{error : err});
-            }
-            else{
-                console.log("delete complete");
-                const datas = userModel;
-
-                datas.find()
-                            .then( custList =>{
-                                if(!custList){
-                                    return res.render('../views/fail.ejs',{error : err})
-                                }
-                                else{
-                                    console.log('this is userLists :'+ custList);
-                                    return res.render('../views/index.ejs',{'custList' : custList}) 
-                                }
-                            })  
-                
             }
         })
 })
