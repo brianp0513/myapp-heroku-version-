@@ -203,7 +203,7 @@ router.post('/login/modicomplete', (req,res) =>{
                         console.log('this is length of profile img : ',profile.img.length);
                         profile.img = req.body.picture;//공란으로 두면 말 그대로 아무것도 적용 안된 것도 되기때문에 전 이미지 링크로 돌린다.
                         profile.PW = req.body.originalPW;
-                        
+                        profile.CID = sessionStorage.getItem('CID');
                         modifyprocess(profile);
                         console.log('successfully changed.');
                     }
