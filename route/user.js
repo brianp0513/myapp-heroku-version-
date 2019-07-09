@@ -129,7 +129,7 @@ router.post('/login/registered',(req,res) =>{
     }));
     //페이스북 로그인 콜백 URL
     router.get('/facebook_oauth',passport.authenticate('facebook',{
-        scope : 'email',
+        scope : ['email','public_profile'],
         successRedirect : '/showprofilesns',
         failureRedirect : '/',
         failureFlash : true
