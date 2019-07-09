@@ -73,8 +73,6 @@ router.post('/login/registered',(req,res) =>{
                     else{
                         //인풋받은 ID와 패스워드를 찾아 오브젝트 아이디를 session storage에 저장하여 이걸 프로필 창에 띄우는데 사용한다.
                         console.log('you pass comparepassword function');
-                        sessionStorage.setItem("localID",req.body.ID);
-                        sessionStorage.setItem("localPW",req.body.PW);
                         next();
                     }
                 })
@@ -86,13 +84,6 @@ router.post('/login/registered',(req,res) =>{
         failureFlash : true
     })
     );
-    router.get('/showprofile',(req,res)=>{
-        userModel.findOne({"ID" : sessionStorage.getItem("localID")}, (err,doc) =>{
-            console.log('req.session.id : ',sessionStorage.getItem("localID"));
-            console.log('show login user : ',doc)
-            return res.render('../views/profile.ejs',{'userInfo' : doc})
-        })
-    })
     //네이버 계정으로 로그인 하기
     function isLoggedIn(req,res,next){
         if(!req.authenticate()){
@@ -103,12 +94,12 @@ router.post('/login/registered',(req,res) =>{
     }
     //네이버 로그인 
     router.get('/auth/naver',isLoggedIn, passport.authenticate('naver',{
-        successRedirect : '/showprofilesns',
+        successRedirect : '/showprofile',
         failureRedirect : '/'
     }))
     //네이버 로그인 콜백 URL
     router.get('/naver_oauth',passport.authenticate('naver',{
-        successRedirect : '/showprofilesns',
+        successRedirect : '/showprofile',
         failureRedirect : '/',
         failureFlash : true
     }))
@@ -121,7 +112,7 @@ router.post('/login/registered',(req,res) =>{
                  'https://www.googleapis.com/auth/userinfo.profile',//사용자 프로필 제공
                  'https://www.googleapis.com/auth/userinfo.email'//사용자 이메일 제공                
                 ],
-                successRedirect : '/showprofilesns',
+                successRedirect : '/showprofile',
                 failureRedirect : '/'  
     }))
     //페이스북 로그인
@@ -130,15 +121,15 @@ router.post('/login/registered',(req,res) =>{
     //페이스북 로그인 콜백 URL
     router.get('/facebook_oauth',passport.authenticate('facebook',{
         scope : ['public_profile','email'],
-        successRedirect : '/showprofilesns',
+        successRedirect : '/showprofile',
         failureRedirect : '/',
         failureFlash : true
     }))
     //모든 SNSpassport는 이 라우터 경로를 통과한다.
-    router.get('/showprofilesns',(req,res)=>{
+    router.get('/showprofile',(req,res)=>{
         //console.log('this is userinfo : ',req.session.user.sns);
         //return res.render('../views/profile.ejs',{'userInfo' : })
-        //console.log('show something : ', userModel);
+        console.log('show something : ', user);
         userModel.findOne({"sns" : sessionStorage.getItem('sns'),"CID" : sessionStorage.getItem('CID'),"ID" : sessionStorage.getItem('email')}, (err,doc) =>{
             console.log('show login user : ',doc);
             return res.render('../views/profile.ejs',{'userInfo' : doc})

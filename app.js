@@ -87,6 +87,9 @@ passport.use('local-login', new LocalStrategy({
             else{
                 console.log('passport.authenticate passed!')
                 console.log('this is user in app.js',user);
+                sessionStorage.setItem("sns",user.provider);
+                sessionStorage.setItem("CID",user.ID);
+                sessionStorage.setItem("email",user.ID);
                 return done(null, user);//조건에 부합하여 로그인 정보를 user라는 이름으로 리턴한다.
             }
         })
