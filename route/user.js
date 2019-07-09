@@ -129,7 +129,6 @@ router.post('/login/registered',(req,res) =>{
     router.get('/showprofile',(req,res)=>{
         //console.log('this is userinfo : ',req.session.user.sns);
         //return res.render('../views/profile.ejs',{'userInfo' : })
-        console.log('show something : ', user);
         userModel.findOne({"sns" : sessionStorage.getItem('sns'),"CID" : sessionStorage.getItem('CID'),"ID" : sessionStorage.getItem('email')}, (err,doc) =>{
             console.log('show login user : ',doc);
             return res.render('../views/profile.ejs',{'userInfo' : doc})
