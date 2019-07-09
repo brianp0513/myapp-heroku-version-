@@ -188,7 +188,7 @@ router.post('/login/modicomplete', (req,res) =>{
                 profile._id = req.body.objID;
 
                 
-                if(profile.sns.length !=0){//연동계정
+                if(profile.sns !='local'){//연동계정
                     console.log('this is PW. length : ', profile.PW.length);
                     if(req.body.PW != 0){//패스워드를 바꿀려는 사람
                         return console.log(profile.sns+" User cannot change the password");
