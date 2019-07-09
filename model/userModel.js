@@ -7,7 +7,7 @@ const SampleSchema = mongoose.Schema({
         sns : {type : String, default : 'local'},
         Firstname : {type : String, default : 'undefined'},
         Lastname : {type : String, default : 'undefined'},
-        CID : {type : String},
+        CID : String,
         ID : String,
         PW : String,
         Address : {Street : String, City : String, State : String, Country : String},

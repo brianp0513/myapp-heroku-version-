@@ -203,6 +203,7 @@ router.post('/login/modicomplete', (req,res) =>{
                         console.log('this is length of profile img : ',profile.img.length);
                         profile.img = req.body.picture;//공란으로 두면 말 그대로 아무것도 적용 안된 것도 되기때문에 전 이미지 링크로 돌린다.
                         profile.PW = req.body.originalPW;
+                        profile.
                         modifyprocess(profile);
                         console.log('successfully changed.');
                     }
@@ -218,6 +219,8 @@ router.post('/login/modicomplete', (req,res) =>{
                         else{
                             profile.img = req.body.picture;
                         }
+                        profile.CID = req.body.ID;
+                        profile.sns = 'local';
                         modifyprocess(profile);
                     }
                     else{
@@ -226,14 +229,25 @@ router.post('/login/modicomplete', (req,res) =>{
                             }
                 }
                 function modifyprocess(profile){//프로필을 수정하는 기능
-                    userModel.updateOne({_id : req.body.objID},profile,{upsert : true}, (err, result)=>{
+                    
+                    userModel.findOneAndDelete({"_id" : profile._id},(err,doc)=>{
                         if(err){
-                            console.log('error when you update : ',err);
                             return res.render('../views/fail.ejs',{error : err})
                         }
                         else{
-                            console.log('update complete!');
-                            console.log('this is the update info : ', profile)
+                            console.log('delete old information!');
+                            console.log('this is delete result : ',doc);
+                            addnewinfo(profile);
+                        }
+                    })
+                }
+                function addnewinfo(profile){
+                    profile.save((err,doc)=>{
+                        if(err){
+                            return res.render('../views/fail.ejs',{error : err})
+                        }
+                        else{
+                            console.log('add new information complete!');
                             return res.render('../views/profile.ejs',{'userInfo' : profile})
                         }
                     })
@@ -257,6 +271,7 @@ router.post('/api/task', function(req,res){
          profile.img.url = req.body.picture;
          profile.Firstname = req.body.firstName;
          profile.Lastname = req.body.LastName;
+         profile.CID = req.body.ID;
          profile.ID = req.body.ID;
          profile.PW = req.body.PassWord;
          profile.Address.Street = req.body.Street;
