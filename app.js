@@ -25,8 +25,8 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 
 //mongoose 구동을 위한 패키지
 const mongoose = require('mongoose');
-//const databaseurl = 'mongodb://sangeonpark:hang0513@ds249017.mlab.com:49017/heroku_9qww56hv'
- const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
+const databaseurl = 'mongodb://sangeonpark:hang0513@ds249017.mlab.com:49017/heroku_9qww56hv'
+ //const databaseurl = 'mongodb://localhost:27017/Thw2modimodi';
 //const databaseurl = 'mongodb://https://git.heroku.com/sangeonpark.git'
 console.log('connecting to the database!');
 mongoose.Promise = global.Promise;
