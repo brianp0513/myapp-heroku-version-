@@ -22,6 +22,7 @@ router.post('/login/registered',(req,res) =>{
          profile.img = '/'+req.body.picture;
          profile.Firstname = req.body.firstName;
          profile.Lastname = req.body.LastName;
+         profile.CID = req.body.ID;
          profile.ID = req.body.ID;
          profile.PW = req.body.PassWord;
          profile.Address.Street = req.body.Street;
