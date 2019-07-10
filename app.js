@@ -257,8 +257,14 @@ passport.use('facebook', new FacebookStrategy({
 }));
 //라우터 경로들 
 app.use('/',userRoute);
+//오류 핸들링
 app.use('*', (req, res ) => {
     return res.render('404.ejs')
+})
+app.use(function handleDatabaseError(error,req,res,next){
+    if(error instanceof MongoError){
+        return res.render('503.ejs');
+    }
 })
 
 //서버 생성
