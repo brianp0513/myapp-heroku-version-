@@ -1,0 +1,35 @@
+body, html{
+    margin : 0;
+    padding: 0;
+    height : 100%;
+}
+.bgimg{
+    border: 0;
+    padding: 0; 
+    background-image: url('/images/login.jpg');
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    /* display, justtify-content, align-items 속성이 합쳐져서 모든 컨텐트들이 가운데 화면 크기에 따라 가운데 정렬된다. */
+}
+input {
+/* padding: 30px; */
+font-size: 30px;
+font-weight: bold;
+text-align: center;
+background-color: #ffffff;
+background-color: rgba( 255, 255, 255, 0.3 );
+border :0;
+outline: 0;
+/* border와 outline 속성으로 버튼의 테두리가 사라졌다. */
+}
+.text{
+
+
+font-weight: bold;
+text-align: center;
+position: absolute;
+}
