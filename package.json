@@ -17,7 +17,7 @@
     "connect-mongodb-session": "^2.2.0",
     "cookie-parser": "^1.4.4",
     "ejs": "^2.6.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.16.2",
     "helmet": "^3.18.0",
     "heroku-cli": "^7.0.9",
